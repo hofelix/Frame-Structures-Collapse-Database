@@ -1,0 +1,52 @@
+plt.subplot(2,2,1)
+(arg1, arg2), text1 ,coe = reg(disin,disout)
+trend_line = arg1*x1 + arg2
+plt.text(0.7,0.1,text1,fontsize=12)
+plt.text(0.7,0.05,'%.3f'%coe,fontsize=12)
+plt.scatter(disin,disout,color = 'red')
+plt.plot(trend_line)
+nn = np.arange(1900)
+for i,txt in enumerate(nn):
+    plt.annotate(txt,(disin[i],disout[i]))
+plt.xlabel('internal component',fontsize=12)
+plt.ylabel('external component',fontsize=12)
+
+plt.subplot(2,2,2)
+(arg1, arg2), text1 ,coe = reg(cosin,cosout)
+trend_line = arg1*x1 + arg2
+plt.text(0.7,0.1,text1,fontsize=12)
+plt.text(0.7,0.05,'%.3f'%coe,fontsize=12)
+plt.scatter(cosin,cosout,color = 'red')
+plt.plot(trend_line)
+nn = np.arange(1900)
+for i,txt in enumerate(nn):
+    plt.annotate(txt,(cosin[i],cosout[i]))
+plt.xlabel('internal component',fontsize=12)
+plt.ylabel('external component',fontsize=12)
+
+plt.subplot(2,2,3)
+(arg1, arg2), text1 ,coe = reg(curin,curout)
+trend_line = arg1*x1 + arg2
+plt.scatter(curin,curout,color = 'red')
+plt.plot(trend_line)
+plt.text(0.7,0.1,text1,fontsize=12)
+plt.text(0.7,0.05,'%.3f'%coe,fontsize=12)
+nn = np.arange(1900)
+for i,txt in enumerate(nn):
+    plt.annotate(txt,(curin[i],curout[i]))
+plt.xlabel('internal component',fontsize=12)
+plt.ylabel('external component',fontsize=12)
+
+plt.subplot(2,2,4)
+(arg1, arg2), text1 ,coe = reg(allin,allout)
+trend_line = arg1*x1 + arg2
+plt.scatter(allin,allout,color = 'red')
+plt.plot(trend_line)
+plt.text(0.7,0.1,text1,fontsize=12)
+plt.text(0.7,0.05,'%.3f'%coe,fontsize=12)
+nn = np.arange(1900)
+for i,txt in enumerate(nn):
+    plt.annotate(txt,(allin[i],allout[i]))
+plt.xlabel('internal component',fontsize=12)
+plt.ylabel('external component',fontsize=12)
+plt.show()

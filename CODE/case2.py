@@ -1,0 +1,92 @@
+import numpy as np
+import math
+from sympy import sin,cos,pi
+from numpy import dot
+from numpy.linalg import norm
+import pandas as pd
+import csv
+
+input1 = np.genfromtxt ('C:/Users/user/Downloads/blender-2.79b-windows64/23.csv', delimiter=",")
+input2 = np.genfromtxt ('C:/Users/user/Downloads/blender-2.79b-windows64/999.csv', delimiter=",")
+d1 = np.array(input1[:,1:4])
+d2 = np.array(input2[:,1:4])
+#print(d1,d2)
+delta = d2-d1
+#print(delta)
+dis = np.sqrt(np.square(delta[:,0]) + np.square(delta[:,1]) + np.square(delta[:,2]))
+#print(dis)
+
+def R(theta) :
+
+    R_x = np.array([[1,         0,                  0                   ],
+                    [0,         math.cos(theta[0]), -math.sin(theta[0]) ],
+                    [0,         math.sin(theta[0]), math.cos(theta[0])  ]
+                    ])
+
+
+
+    R_y = np.array([[math.cos(theta[1]),    0,      math.sin(theta[1])  ],
+                    [0,                     1,      0                   ],
+                    [-math.sin(theta[1]),   0,      math.cos(theta[1])  ]
+                    ])
+
+    R_z = np.array([[math.cos(theta[2]),    -math.sin(theta[2]),    0],
+                    [math.sin(theta[2]),    math.cos(theta[2]),     0],
+                    [0,                     0,                      1]
+                    ])
+
+
+    R = np.dot(R_z, np.dot( R_y, R_x ))
+
+    return R
+
+cos1 = np.array(input1[:,4:7])
+cos2 = np.array(input2[:,4:7])
+a = [0,0,1]
+data = []
+for i in range(0,248):
+    theta1 = cos1[i]
+    theta2 = cos2[i]
+    r1 = R(theta1)[:,2]
+    r2 = R(theta2)[:,2]
+    cos = np.dot(r1,r2)/np.sqrt((r1[0]*r1[0] + r1[1]*r1[1] + r1[2]*r1[2])*(r2[0]*r2[0] + r2[1]*r2[1] + r2[2]*r2[2]))
+    data.append(cos)
+data = np.reshape(data,(248,1))
+#print(data)
+x1_value = np.array(input1[:,1])
+y1_value = np.array(input1[:,2])
+z1_value = np.array(input1[:,3])
+xt1 = np.gradient(x1_value)
+yt1 = np.gradient(y1_value)
+zt1 = np.gradient(z1_value)
+xxt1 = np.gradient(xt1)
+yyt1 = np.gradient(yt1)
+zzt1 = np.gradient(zt1)
+cur1 = np.sqrt((xxt1 * xxt1 + yyt1 * yyt1 + zzt1 * zzt1) * (xt1*xt1+yt1*yt1+zt1*zt1)-np.square(xt1*xxt1+yt1*yyt1+zt1*zzt1)) /((np.sqrt(xt1 * xt1 + yt1 * yt1+zt1*zt1)) ** 3)
+
+x2_value = np.array(input2[:,1])
+y2_value = np.array(input2[:,2])
+z2_value = np.array(input2[:,3])
+xt2 = np.gradient(x2_value)
+yt2 = np.gradient(y2_value)
+zt2 = np.gradient(z2_value)
+xxt2 = np.gradient(xt2)
+yyt2 = np.gradient(yt2)
+zzt2 = np.gradient(zt2)
+cur2 = np.sqrt((xxt2 * xxt2 + yyt2 * yyt2 + zzt2 * zzt2) * (xt2*xt2+yt2*yt2+zt2*zt2)-np.square(xt2*xxt2+yt2*yyt2+zt2*zzt2)) /((np.sqrt(xt2 * xt2 + yt2 * yt2+zt2*zt2)) ** 3)
+cur = np.abs(cur2-cur1)
+
+str_list =    str(np.sum(dis[0:6])/6) +'\n' + str((np.sum(dis[118:130])+np.sum(dis[134:146]))/24)+'\n'\
+            + str((np.sum(dis[146:158])+np.sum(dis[102:118]))/28) +'\n'+ str((np.sum(dis[158:163])+np.sum(dis[92:102])+dis[167]+dis[87]+dis[88])/18)+'\n'\
+            + str((np.sum(dis[6:86])+np.sum(dis[88:92])+np.sum(dis[163:167])+np.sum(dis[168:248]))/160)+'\n'+str(np.sum(dis[130:134])/4)+'\n'\
+            \
+            + str(np.sum(data[0:6])/6) +'\n' + str((np.sum(data[118:130])+np.sum(data[134:146]))/24)+'\n'\
+            + str((np.sum(data[146:158])+np.sum(data[102:118]))/28) +'\n'+ str((np.sum(data[158:163])+np.sum(data[92:102]))/18)+'\n'\
+            + str((np.sum(data[6:86])+np.sum(data[88:92])+np.sum(data[163:167])+np.sum(data[168:248]))/160)+'\n'+str(np.sum(data[130:134])/4)+'\n'\
+            \
+            + str(np.sum(cur[0:6])/6) +'\n' + str((np.sum(cur[118:130])+np.sum(cur[134:146]))/24)+'\n'\
+            + str((np.sum(cur[146:158])+np.sum(cur[102:118]))/28) +'\n'+ str((np.sum(cur[158:163])+np.sum(cur[92:102])+cur[167]+cur[87]+cur[88])/18)+'\n'\
+            + str((np.sum(cur[6:86])+np.sum(cur[88:92])+np.sum(cur[163:167])+np.sum(cur[168:248]))/160)+'\n'+str(np.sum(cur[130:134])/4)+'\n'
+
+fo = open("C:/Users/USER/Desktop/OUTPUT/OUTPUT2/999.csv", "w" )
+fo.write( str_list )
